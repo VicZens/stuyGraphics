@@ -60,7 +60,7 @@ for PI)
 
 jdyrlandweaver
 ====================*/
-void parse_file ( char * filename, 
+void parse_file (char * filename,
                   struct matrix * transform, 
                   struct matrix * pm,
                   screen s) {
