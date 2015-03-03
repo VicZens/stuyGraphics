@@ -115,6 +115,14 @@ Returns:
 multiply each element of m by x
 */
 void scalar_mult(double x, struct matrix *m) {
+  int r = 0;
+  int c = 0;
+
+  for (r = 0; r < m->r; r++) {
+    for (c = 0; c < m->c; c++) {
+      m[r][c] = x * m[r][c];
+    }
+  }
 }
 
 
@@ -126,7 +134,7 @@ Returns:
 a*b -> b
 */
 void matrix_mult(struct matrix *a, struct matrix *b) {
-  
+   
 }
 
 
@@ -155,6 +163,7 @@ Returns: The translation matrix created using x, y and z
 as the translation offsets.
 ====================*/
 struct matrix * make_translate(double x, double y, double z) {
+  
 }
 
 /*======== struct matrix * make_scale() ==========
