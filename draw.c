@@ -25,35 +25,6 @@ void add_circle( struct matrix * points,
 		 double r, double step ) {
 }
 
-/*======== void add_curve() ==========
-Inputs:   struct matrix *points
-         double x0
-         double y0
-         double x1
-         double y1
-         double x2
-         double y2
-         double x3
-         double y3
-         double step
-         int type  
-Returns: 
-
-Adds the curve bounded by the 4 points passsed as parameters
-of type specified in type (see matrix.h for curve type constants)
-to the matrix points
-
-03/16/12 15:24:25
-jdyrlandweaver
-====================*/
-void add_curve( struct matrix *points, 
-		double x0, double y0, 
-		double x1, double y1, 
-		double x2, double y2, 
-		double x3, double y3, 
-		double step, int type ) {
-}
-
 /*======== void add_point() ==========
 Inputs:   struct matrix * points
          int x
