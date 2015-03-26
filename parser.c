@@ -94,10 +94,27 @@ void parse_file ( char * filename,
     //printf(":%s:\n",line);
     char c;
     double x, y, z, x1, y1, z1, x2, y2, z2, x3, y3, z3, x4, y4, z4;
-   
+    double r;
     c = line[0];
 
     switch (c) {
+    case 'p':
+      fgets(line, 255, f);
+      double w, h, d;
+      sscanf(line, "%lf %lf %lf %lf %lf %lf", &x, &y, &z, &w, &h, &d);
+      add_prism(pm, x, y, z, w, h, d);
+      break;
+    case 'm':
+      fgets(line, 255, f);
+      sscanf(line, "%lf %lf %lf", &x, &y, &r);
+      add_sphere(pm, x, y, 1, r, STEP);
+      break;
+    case 'd':
+      fgets(line, 255, f);
+      double r1, r2;
+      sscanf(line, "%lf %lf %lf %lf", &x, &y, &r1, &r2);
+      add_torus(pm, x, y, 1, r1, r2, STEP);
+      break;
     case 'l':
       //      printf("LINE!\n");
       fgets(line, 255, f);
@@ -106,6 +123,11 @@ void parse_file ( char * filename,
       sscanf(line, "%lf %lf %lf %lf %lf %lf", &x, &y, &z, &x1, &y1, &z1);
       add_edge(pm, x, y, z, x1, y1, z1);
       // printf( "%lf %lf %lf %lf %lf %lf\n", x, y, z, x1, y1, z1);
+      break;
+    case 'c':
+      fgets(line, 255, f);
+      sscanf(line, "%lf %lf %lf", &x, &y, &r);
+      add_circle(pm, x, y, r, STEP);
       break;
     case 's':
       //printf("SCALE\n");

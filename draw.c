@@ -23,7 +23,87 @@
 void add_circle( struct matrix * points, 
 		 double cx, double cy, 
 		 double r, double step ) {
+  double i;
+  double oldX = cx + r;
+  double oldY = cy + 0;
+  double newX;
+  double newY;
+  
+  for(i = 0; i < 2 + step; i += step) {
+    double rad = M_PI * (i + step);
+    newX = cx + r * cos(rad);
+    newY = cy + r * sin(rad);
+    add_edge(points, oldX, oldY, 0, newX, newY, 0);
+    oldX = newX;
+    oldY = newY;
+  }
 }
+
+void add_prism(struct matrix * points,
+	       double x, double y, double z,
+	       double w, double h, double d) { 
+  add_edge(points, x, y, z, x, y, z);
+  add_edge(points, x+w, y, z, x+w, y, z);
+  add_edge(points, x, y-h, z, x, y-h, z);
+  add_edge(points, x, y, z-d, x, y, z-d);
+  add_edge(points, x+w, y-h, z, x+w, y-h, z);
+  add_edge(points, x+w, y, z-d, x+w, y, z-d);
+  add_edge(points, x, y-h, z-d, x, y-h, z-d);
+  add_edge(points, x+w, y-h, z-d, x+w, y-h, z-d);
+} 
+
+void add_sphere(struct matrix * points,
+		double x, double y, double z,
+		double r, double step) {
+  double oldX = x + r;
+  double oldY = y;
+  double oldZ = z;
+
+  int i, j;
+  
+  for(i = 0; i < 2 + step; i += step) {
+    double radOne = M_PI * (i + step);
+    double rc = r * cos(radOne);
+    double rs = r * cos(radOne);
+    for(j = 0; j < 2 + step; j += step) {
+      double radTwo = M_PI * (j + step);
+      double newX = x + rc;
+      double newY = y + rs * cos(radTwo);
+      double newZ = z + rs * sin(radTwo);
+      add_edge(points, oldX, oldY, oldZ, oldX, oldY, oldZ);
+      oldX = newX;
+      oldY = newY;
+      oldZ = newZ;
+    }
+  }
+}
+
+void add_torus(struct matrix * points,
+	       double x, double y, double z,
+	       double r1, double r2, double step) {
+  double oldX = x + r1 + r2;
+  double oldY = y;
+  double oldZ = z;
+
+  int i, j;
+  
+  for(i = 0; i < 2 + step; i += step) {
+    double radOne = M_PI * (i + step);
+    double rc = r1 * cos(radOne);
+    double rs = r1 * cos(radOne);
+    for(j = 0; j < 2 + step; j += step) {
+      double radTwo = M_PI * (j + step);
+      double newX = x + cos(radTwo) * (rc + r2);
+      double newY = y + rs;
+      double newZ = z + sin(radTwo) * (rc + r2);
+      add_edge(points, oldX, oldY, oldZ, oldX, oldY, oldZ);
+      oldX = newX;
+      oldY = newY;
+      oldZ = newZ;
+    }
+  }
+}
+
 
 /*======== void add_point() ==========
 Inputs:   struct matrix * points

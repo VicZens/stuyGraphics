@@ -21,4 +21,16 @@ void add_curve( struct matrix *points,
 		double x2, double y2,
 		double x3, double y3,
 		double step, int type );
+
+void add_prism(struct matrix * points,
+	       double x, double y, double z,
+	       double w, double h, double d);
+
+void add_sphere(struct matrix * points,
+		double x, double y, double z,
+		double r, double step);
+
+void add_torus(struct matrix * points,
+	       double x, double y, double z,
+	       double r1, double r2, double step);
 #endif
