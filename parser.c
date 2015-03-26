@@ -93,10 +93,11 @@ void parse_file ( char * filename,
     line[strlen(line)-1]='\0';
     //printf(":%s:\n",line);
     char c;
-    double x, y, z, x1, y1, z1, x2, y2, z2, x3, y3, z3, x4, y4, z4;
+    double x, y, z, x1, y1, z1;
+    //, x2, y2, z2, x3, y3, z3, x4, y4, z4;
     double r;
     c = line[0];
-
+    
     switch (c) {
     case 'p':
       fgets(line, 255, f);
@@ -107,13 +108,13 @@ void parse_file ( char * filename,
     case 'm':
       fgets(line, 255, f);
       sscanf(line, "%lf %lf %lf", &x, &y, &r);
-      add_sphere(pm, x, y, 1, r, STEP);
+      add_sphere(pm, x, y, 1, r, .5);
       break;
     case 'd':
       fgets(line, 255, f);
       double r1, r2;
       sscanf(line, "%lf %lf %lf %lf", &x, &y, &r1, &r2);
-      add_torus(pm, x, y, 1, r1, r2, STEP);
+      add_torus(pm, x, y, 1, r1, r2, .5);
       break;
     case 'l':
       //      printf("LINE!\n");
