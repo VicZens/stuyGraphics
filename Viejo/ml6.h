@@ -20,6 +20,7 @@ a pixel as a color triple
   each color value
 */
 struct point_t {
+
   int red;
   int green;
   int blue;

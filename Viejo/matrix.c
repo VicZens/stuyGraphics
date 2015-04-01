@@ -61,29 +61,13 @@ Reallocates the memory for m->m such that it now has
 newcols number of collumns
 ====================*/
 void grow_matrix(struct matrix *m, int newcols) {
+  
   int i;
   for (i=0;i<m->rows;i++) {
       m->m[i] = realloc(m->m[i],newcols*sizeof(double));
-    }
+  }
   m->cols = newcols;
 }
-
-/*-------------- void copy_matrix() --------------
-Inputs:  struct matrix *a
-         struct matrix *b 
-Returns: 
-
-copy matrix a to matrix b
-*/
-void copy_matrix(struct matrix *a, struct matrix *b) {
-  int r, c;
-
-  for (r=0; r < a->rows; r++) 
-    for (c=0; c < a->cols; c++)  
-      b->m[r][c] = a->m[r][c];  
-}
-
-
 
 
 /*-------------- void print_matrix() --------------
@@ -93,6 +77,191 @@ Returns:
 print the matrix
 */
 void print_matrix(struct matrix *m) {
-   
+
+  int i, j;
+  for (i=0; i < m->rows; i++) {
+    for (j=0; j < m->cols; j++) 
+      printf("%f ", m->m[i][j]);
+    printf("\n");
+  }
 }
 
+/*-------------- void ident() --------------
+Inputs:  struct matrix *m <-- assumes m is a square matrix
+Returns: 
+
+turns m in to an identity matrix
+*/
+void ident(struct matrix *m) {
+
+  int r, c;
+  for (r=0; r < m->rows; r++) {
+    for (c=0; c < m->cols; c++)  {
+
+      if ( r == c )
+	m->m[r][c] = 1;
+      else
+	m->m[r][c] = 0;
+    }
+  }
+}
+
+
+/*-------------- void scalar_mult() --------------
+Inputs:  double x
+         struct matrix *m 
+Returns: 
+
+multiply each element of m by x
+*/
+void scalar_mult(double x, struct matrix *m) {
+
+  int r, c;
+  for (r=0; r < m->rows; r++) 
+    for (c=0; c < m->cols; c++)  {
+      
+      double t = m->m[r][c];
+      m->m[r][c] = t * x;
+    }
+}
+
+
+/*-------------- void matrix_mult() --------------
+Inputs:  struct matrix *a
+         struct matrix *b 
+Returns: 
+
+a*b -> b
+*/
+void matrix_mult(struct matrix *a, struct matrix *b) {
+  int r, c;
+  struct matrix * tmp;
+  
+  tmp = new_matrix(4, 1);
+  
+  for (c=0; c < b->cols; c++)  {
+    for (r=0; r < 4; r++) 
+      tmp->m[r][0] = b->m[r][c];
+
+    for (r=0; r < 4; r++) {
+      b->m[r][c] =  a->m[r][0] * tmp->m[0][0] + 
+	a->m[r][1] * tmp->m[1][0] +
+	a->m[r][2] * tmp->m[2][0] +
+	a->m[r][3] * tmp->m[3][0];
+    }
+  }
+  
+  free_matrix(tmp);
+}
+
+
+
+/*-------------- void copy_matrix() --------------
+Inputs:  struct matrix *a
+         struct matrix *b 
+Returns: 
+
+copy matrix a to matrix b
+*/
+void copy_matrix(struct matrix *a, struct matrix *b) {
+
+  int r, c;
+
+  for (r=0; r < a->rows; r++) 
+    for (c=0; c < a->cols; c++)  
+      b->m[r][c] = a->m[r][c];  
+}
+
+/*======== struct matrix * make_translate() ==========
+Inputs:  int x
+         int y
+         int z 
+Returns: The translation matrix created using x, y and z 
+as the translation offsets.
+====================*/
+struct matrix * make_translate(double x, double y, double z) {
+
+  struct matrix * m = new_matrix(4, 4);
+  ident(m);
+
+  m->m[0][3] = x;
+  m->m[1][3] = y;
+  m->m[2][3] = z;
+
+  return m;
+}
+
+/*======== struct matrix * make_scale() ==========
+Inputs:  int x
+         int y
+         int z 
+Returns: The translation matrix creates using x, y and z
+as the scale factors
+====================*/
+struct matrix * make_scale(double x, double y, double z) {
+
+  struct matrix * m = new_matrix(4, 4);
+  ident(m);
+
+  m->m[0][0] = x;
+  m->m[1][1] = y;
+  m->m[2][2] = z;
+
+  return m;
+}
+
+/*======== struct matrix * make_rotX() ==========
+Inputs:  double theta
+
+Returns: The rotation matrix created using theta as the 
+angle of rotation and X as the axis of rotation.
+====================*/
+struct matrix * make_rotX(double theta) {
+
+  struct matrix * m = new_matrix(4, 4);
+  ident(m);
+
+  m->m[1][1] = cos( theta );
+  m->m[1][2] = -1 *  sin( theta );
+  m->m[2][1] = sin( theta );
+  m->m[2][2] = cos( theta );
+  return m;
+}
+
+/*======== struct matrix * make_rotY() ==========
+Inputs:  double theta
+         char c 
+Returns: The rotation matrix created using theta as the 
+angle of rotation and Y as the axis of rotation.
+====================*/
+struct matrix * make_rotY(double theta) {
+
+  struct matrix * m = new_matrix(4, 4);
+  ident(m);
+    
+    m->m[0][0] = cos( theta );
+    m->m[0][2] = -1 * sin( theta );
+    m->m[2][0] = sin( theta );
+    m->m[2][2] = cos( theta );
+
+  return m;
+}
+
+/*======== struct matrix * make_rotZ() ==========
+Inputs:  double theta
+         char c 
+Returns: The rotation matrix created using theta as the 
+angle of rotation and Z as the axis of rotation.
+====================*/
+struct matrix * make_rotZ(double theta) {
+
+  struct matrix * m = new_matrix(4, 4);
+  ident(m);
+
+  m->m[0][0] = cos( theta );
+  m->m[0][1] = -1 *  sin( theta );
+  m->m[1][0] = sin( theta );
+  m->m[1][1] = cos( theta );
+
+  return m;
+}

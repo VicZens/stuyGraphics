@@ -5,30 +5,20 @@
 #include "ml6.h"
 #include "display.h"
 #include "draw.h"
+#include "matrix.h"
+#include "parser.h"
 
 int main() {
 
   screen s;
-  color c;
+  struct matrix *edges;
+  struct matrix *transform;
 
-  c.red = 0;
-  c.green = 255;
-  c.blue = 255;
-
-  int i, j;
-
-  for( i=0; i<XRES; i++) 
-    for ( j=0; j<YRES; j++) {
-
-      c.red = random() % (MAX_COLOR + 1);
-      c.green = random() % (MAX_COLOR + 1);
-      c.blue = random() % (MAX_COLOR + 1);
-
-      plot( s, c, i, j);
-    }
-
-  display( s );    
-  save_ppm(s,  "image" );
-  save_extension(s, "image.jpg");
+  edges = new_matrix(4, 4);
+  transform = new_matrix(4, 4);
   
+  parse_file( "script_c", transform, edges, s );
+
+  free_matrix( transform );
+  free_matrix( edges );
 }  
