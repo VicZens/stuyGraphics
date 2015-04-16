@@ -423,6 +423,7 @@ Returns:
 add the line connecting (x0, y0, z0) to (x1, y1, z1) to points
 should use add_point
 ====================*/
+
 void add_edge( struct matrix * points, 
 	       double x0, double y0, double z0, 
 	       double x1, double y1, double z1) {
@@ -463,7 +464,7 @@ void draw_line(int x0, int y0, int x1, int y1, screen s, color c) {
   x = x0;
   y = y0;
   
-  //swap points so we're always draing left to right
+  //swap points so we're always drawing left to right
   if ( x0 > x1 ) {
     x = x1;
     y = y1;
