@@ -9,8 +9,6 @@ for red, green and blue respectively
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <sys/types.h>
-#include <sys/wait.h>
 
 #include "ml6.h"
 #include "display.h"
@@ -51,9 +49,9 @@ void clear_screen( screen s ) {
   int x, y;
   color c;
 
-  c.red = 255;
-  c.green = 255;
-  c.blue = 255;
+  c.red = 0;
+  c.green = 0;
+  c.blue = 0;
 
   for ( y=0; y < YRES; y++ )
     for ( x=0; x < XRES; x++)      

@@ -24,12 +24,20 @@ The file follows the following format:
      The commands are as follows:
          l: add a line to the edge matrix - 
 	    takes 6 arguemnts (x0, y0, z0, x1, y1, z1)
-	 c: add a circle to the edge matrix - 
-	    takes 3 arguments (cx, cy, r)
-	 h: add a hermite curve to the edge matrix -
-	    takes 8 arguments (x0, y0, x1, y1, x2, y2, x3, y3)
-	 b: add a bezier curve to the edge matrix -
-	    takes 8 arguments (x0, y0, x1, y1, x2, y2, x3, y3)
+         b: add a hermite cutve to the edge matrix - 
+	    takes 8 arguemnts (x0, y0, x1, y1, x2, y2, x3, y3)
+         h: add a bezier to the edge matrix - 
+	    takes 8 arguemnts (x0, y0, x1, y1, x2, y2, x3, y3)
+         c: add a circle to the edge matrix - 
+	    takes 3 arguemnts (cx, cy, r)
+         m: add a sphere to the edge matrix - 
+	    takes 3 arguemnts (cx, cy, r)
+         d: add a torus to the edge matrix - 
+	    takes 4 arguemnts (cx, cy, r1, r2)
+         p: add a rectangular prism to the edge matrix - 
+	    takes 6 arguemnts (x, y, z, width, height, depth)
+	 w: clear the currnt edge matrix -
+	    takes 0 arguments
 	 i: set the transform matrix to the identity matrix - 
 	 s: create a scale matrix, 
 	    then multiply the transform matrix by the scale matrix - 
@@ -78,8 +86,8 @@ void parse_file ( char * filename,
   double angle;
   color g;
 
-  g.red = 255;
-  g.green = 0;
+  g.red = 0;
+  g.green = 255;
   g.blue = 255;
   
   clear_screen(s);
@@ -93,29 +101,11 @@ void parse_file ( char * filename,
     line[strlen(line)-1]='\0';
     //printf(":%s:\n",line);
     char c;
-    double x, y, z, x1, y1, z1;
-    //, x2, y2, z2, x3, y3, z3, x4, y4, z4;
-    double r;
+    double x, y, z, x1, y1, z1, x2, y2, x3, y3, x4, y4;
+   
     c = line[0];
-    
+
     switch (c) {
-    case 'p':
-      fgets(line, 255, f);
-      double w, h, d;
-      sscanf(line, "%lf %lf %lf %lf %lf %lf", &x, &y, &z, &w, &h, &d);
-      add_prism(pm, x, y, z, w, h, d);
-      break;
-    case 'm':
-      fgets(line, 255, f);
-      sscanf(line, "%lf %lf %lf", &x, &y, &r);
-      add_sphere(pm, x, y, 1, r, .5);
-      break;
-    case 'd':
-      fgets(line, 255, f);
-      double r1, r2;
-      sscanf(line, "%lf %lf %lf %lf", &x, &y, &r1, &r2);
-      add_torus(pm, x, y, 1, r1, r2, .5);
-      break;
     case 'l':
       //      printf("LINE!\n");
       fgets(line, 255, f);
@@ -125,10 +115,43 @@ void parse_file ( char * filename,
       add_edge(pm, x, y, z, x1, y1, z1);
       // printf( "%lf %lf %lf %lf %lf %lf\n", x, y, z, x1, y1, z1);
       break;
+    case 'p':
+      fgets(line, 255, f);
+      sscanf(line, "%lf %lf %lf %lf %lf %lf", &x, &y, &z, &x1, &y1, &z1);
+      add_box(pm, x, y, z, x1, y1, z1);
+      // printf( "%lf %lf %lf %lf %lf %lf\n", x, y, z, x1, y1, z1);
+      break;
+    case 'm':
+      fgets(line, 255, f);
+      sscanf(line, "%lf %lf %lf", &x, &y, &z);
+      add_sphere(pm, x, y, z, 5);
+      //printf( "%lf %lf %lf\n", x, y, z);
+      break;
+    case 'd':
+      fgets(line, 255, f);
+      sscanf(line, "%lf %lf %lf %lf", &x, &y, &z, &z1);
+      add_torus(pm, x, y, z, z1, 5);
+      //printf( "%lf %lf %lf\n", x, y, z);
+      break;
     case 'c':
       fgets(line, 255, f);
-      sscanf(line, "%lf %lf %lf", &x, &y, &r);
-      add_circle(pm, x, y, r, STEP);
+      sscanf(line, "%lf %lf %lf", &x, &y, &z);
+      add_circle(pm, x, y, z, 0.01);
+      //printf( "%lf %lf %lf\n", x, y, z);
+      break;
+    case 'b':
+      fgets(line, 255, f);
+      sscanf(line, "%lf %lf %lf %lf %lf %lf %lf %lf",
+	     &x1, &y1, &x2, &y2, &x3, &y3, &x4, &y4);
+      add_curve(pm, x1, y1, x2, y2, x3, y3, x4, y4, 0.01, BEZIER_MODE );
+      //printf( "%lf %lf %lf\n", x, y, z);
+      break;
+    case 'h':
+      fgets(line, 255, f);
+      sscanf(line, "%lf %lf %lf %lf %lf %lf %lf %lf",
+	     &x1, &y1, &x2, &y2, &x3, &y3, &x4, &y4);
+      add_curve(pm, x1, y1, x2, y2, x3, y3, x4, y4, 0.01, HERMITE_MODE );
+      //printf( "%lf %lf %lf\n", x, y, z);
       break;
     case 's':
       //printf("SCALE\n");
@@ -186,15 +209,20 @@ void parse_file ( char * filename,
       draw_lines(pm, s, g);
       display(s);
       break;
+    case 'w':
+      pm->lastcol = 0;
+      break;
     case 'g':
       fgets(line, 255, f);
       // line[strlen(line)-1] = '\0';
       clear_screen(s);
-      draw_lines(pm, s, g);
+      draw_polygons(pm, s, g);
       save_extension(s, line);
       break;
     case 'q':
       return;
+    case '#':
+      break;
     default:
       printf("Invalid command\n");
       break;
