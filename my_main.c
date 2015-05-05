@@ -67,6 +67,10 @@ void my_main( int polygons ) {
 
   for (i=0;i<lastop;i++) {  
     switch (op[i].opcode) {
+    case 'push':
+      break;
+    case 'pop'
+      break;
     }
   }
 }
